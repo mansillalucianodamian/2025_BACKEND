@@ -35,7 +35,7 @@ class AuthService {
             subject: 'Verifica tu cuenta de mail',
             html: `
                 <h1>Verifica tu cuenta de mail</h1>
-                <a href="http://localhost:${ENVIROMENT.PORT}/api/auth/verify-email/${verification_token}">Verificar</a>
+                <a href="${ENVIROMENT.URL_BACKEND}/api/auth/verify-email/${verification_token}">Verificar</a>
             `
         })
         return
