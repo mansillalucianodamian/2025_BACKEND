@@ -73,6 +73,10 @@ class MemberWorkspaceRepository {
         )
         return members_list_formated
     }
+    static async getByUserIdAndWorkspaceId(user_id, workspace_id){
+        const member = await MemberWorkspace.findOne({id_user: user_id, id_workspace: workspace_id})
+        return member
+    }
 
 }
 
