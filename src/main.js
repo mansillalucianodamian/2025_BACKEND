@@ -6,6 +6,7 @@ import randomMiddleware from "./middlewares/random.middleware.js";
 import mailTransporter from "./config/mailTransporter.config.js";
 import ENVIROMENT from "./config/enviroment.config.js";
 import cors from 'cors'
+import memberRouter from "./routes/member.router.js";
 
 connectToMongoDB()
 
@@ -19,6 +20,7 @@ app.use(express.json())
 //Todas las consultas que empiezen con /api/auth va a ser gestionadas por el authRouter
 app.use('/api/auth', authRouter)
 app.use('/api/workspace', workspaceRouter)
+app.use('/api/member', memberRouter)
 
 /* mailTransporter.sendMail({
     from: ENVIROMENT.GMAIL_USER, //desde quien-

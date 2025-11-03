@@ -53,6 +53,7 @@ class WorkspaceRepository {
             throw error
         }
     }
+  
 }
 
 export default WorkspaceRepository
