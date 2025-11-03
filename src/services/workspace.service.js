@@ -1,4 +1,5 @@
 
+
 import ENVIROMENT from "../config/enviroment.config.js"
 import mailTransporter from "../config/mailTransporter.config.js"
 import { ServerError } from "../error.js"
@@ -50,7 +51,7 @@ class WorkspaceService {
             subject: "Te han invitado a un espacio de trabajo",
             html: `
                         <h1>Has sido invitado al workspace: ${workspace_selected.name}</h1>
-                        <a href="${ENVIRONMENT.URL_BACKEND}/api/member/confirm/${invitation_token}">Aceptar</a>
+                        <a href="${ENVIROMENT.URL_BACKEND}/api/member/confirm/${invitation_token}">Aceptar</a>
                         `
         })
     }
