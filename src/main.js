@@ -7,6 +7,7 @@ import mailTransporter from "./config/mailTransporter.config.js";
 import ENVIROMENT from "./config/enviroment.config.js";
 import cors from 'cors'
 import memberRouter from "./routes/member.router.js";
+import MessagesChannelRepository from "./repositories/messageChannel.repository.js";
 
 connectToMongoDB()
 
@@ -41,3 +42,12 @@ app.listen(
         console.log(`Tu servidor se esta ejecutando correctamente en el puerto ${ENVIROMENT.PORT}`)
     }
 )
+
+/* MessagesChannelRepository.create(
+    "69021f8d1f59e8d52c3e60f8",
+    "68f8d8cc6968605f86bc6c90",
+    'hola'
+) */
+/* MessagesChannelRepository.getAllByChannelId("69021f8d1f59e8d52c3e60f8").then(
+    (messages) => console.log(messages[0])
+) */

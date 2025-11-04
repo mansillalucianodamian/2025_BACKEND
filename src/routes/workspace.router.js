@@ -60,6 +60,10 @@ workspaceRouter.post(
     workspaceMiddleware(['admin']), // => Solo miembros con rol de administrador pueden crear canales
     ChannelController.create
 )
+//CONSIGNA:
+//Crear los controladores para crear mensajes y obtener mensajes
+//Siempre que se cree o obtenga la lista el servidor debera responder con la lista de mensajes
+
 
 //Crear mensajes
 workspaceRouter.post(
@@ -67,8 +71,17 @@ workspaceRouter.post(
     authMiddleware,
     workspaceMiddleware(),
     channelMiddleware,
+    MessagesController.create
+)
+//Obtener mensajes
+workspaceRouter.get(
+    '/:workspace_id/channels/:channel_id/messages',
+    authMiddleware,
+    workspaceMiddleware(),
+    channelMiddleware,
     MessagesController.getAllByChannelId
 )
+
 
 workspaceRouter.get(
     '/:workspace_id/test',
