@@ -23,7 +23,8 @@ class WorkspaceController {
                     status: 200,
                     message: 'Espacios de trabajo obtenidos exitosamente',
                     data: {
-                        workspaces: workspaces
+                        workspaces: workspaces,
+                        email: user.email
                     }
                 }
             )
@@ -62,6 +63,7 @@ class WorkspaceController {
                     ok: true,
                     message: 'Workspace creado con exito',
                     data: {
+                        
                         workspace_created
                     }
                 }

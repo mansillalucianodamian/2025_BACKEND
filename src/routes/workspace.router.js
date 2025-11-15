@@ -32,32 +32,19 @@ workspaceRouter.post(
     authMiddleware,
     WorkspaceController.create
 )
-// POST /workspaces/:workspace_id/channels (Solo admins)
-/* 
-body: {
-    name
-}
-- Crear un nuevo canal
-*/
 
-
-// GET /workspaces/:workspace_id
-/* 
-- Obtener los detalles de un espacio de trabajo
-- Cargar la lista de canales de un espacio de trabajo
-*/
-
+//Obtener canales
 workspaceRouter.get(
-    '/:workspace_id',
-    authMiddleware, //Extrae el token el header el token lo verifica y lo guarda en la request
+    '/:workspace_id/channels',
+    authMiddleware, 
     workspaceMiddleware(),
     WorkspaceController.getById
 )
-
+ //Crear canales
 workspaceRouter.post(
     '/:workspace_id/channels',
     authMiddleware,
-    workspaceMiddleware(['admin']), // => Solo miembros con rol de administrador pueden crear canales
+    workspaceMiddleware(['admin']), 
     ChannelController.create
 )
 //CONSIGNA:

@@ -75,7 +75,8 @@ class MessagesChannelRepository{
                     _id: message._id,
                     message_content: message.content,
                     member_id: message.sender_member_id._id,
-                    user_name: message.sender_member_id.id_user.name
+                    user_name: message.sender_member_id.id_user.name,
+                    message_create_date: message.created_at
                 }
             }
         )
