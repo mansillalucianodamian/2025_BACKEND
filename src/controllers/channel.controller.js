@@ -13,7 +13,7 @@ class ChannelController {
                 });
             }
             // Crear el canal usando .createChannel
-            const channel_list = await ChannelService.create(workspace_selected.id, name);
+            const channel_list = await ChannelService.create(workspace_selected._id, name);
             response.status(201).json({
                 ok: true,
                 message: 'Canal creado',
@@ -28,6 +28,26 @@ class ChannelController {
                 ok: false,
                 message: 'Error interno del servidor',
             });
+        }
+    }
+    static async getAllByWorkspaceId(request, response) {
+        try {
+            const { workspace_selected } = request;
+
+            const channels = await ChannelService.getAllByWorkspaceId(workspace_selected._id);
+
+            response.status(200).json({
+                ok: true,
+                message: 'Lista de canales obtenida',
+                status: 200,
+                data: { channels }
+            });
+        } catch (error) {
+            console.error('Error al obtener canales:', error);
+            response.status(500).json({
+                ok: false,
+                message: 'Error interno del servidor',
+          });
         }
     }
 }
