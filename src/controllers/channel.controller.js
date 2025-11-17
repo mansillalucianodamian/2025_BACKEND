@@ -13,7 +13,7 @@ class ChannelController {
                 });
             }
             // Crear el canal usando .createChannel
-            const channel_list = await ChannelService.create(workspace_selected._id, name);
+            const channel_list = await ChannelService.create(workspace_selected.id, name);
             response.status(201).json({
                 ok: true,
                 message: 'Canal creado',
@@ -34,7 +34,7 @@ class ChannelController {
         try {
             const { workspace_selected } = request;
 
-            const channels = await ChannelService.getAllByWorkspaceId(workspace_selected._id);
+            const channels = await ChannelService.getAllByWorkspaceId(workspace_selected.id);
 
             response.status(200).json({
                 ok: true,
