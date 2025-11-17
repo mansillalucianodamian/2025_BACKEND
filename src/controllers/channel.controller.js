@@ -30,26 +30,35 @@ class ChannelController {
             });
         }
     }
-    static async getAllByWorkspaceId(request, response) {
+    static async getAllByWorkspace(request, response) {
         try {
-            const { workspace_selected } = request;
+            //Obtener la lista de canales de un espacio de trabajo
+            const { workspace_id } = request.params
+            const channels = await ChannelRepository.getAllByWorkspace(
+                workspace_id
+            );
 
-            const channels = await ChannelService.getAllByWorkspaceId(workspace_selected.id);
-
-            response.status(200).json({
+            return response.json({
                 ok: true,
-                message: 'Lista de canales obtenida',
                 status: 200,
-                data: { channels }
-            });
-        } catch (error) {
-            console.error('Error al obtener canales:', error);
-            response.status(500).json({
+                message: "Lista de canales obtenida",
+                data: {
+                    channels: channels
+                }
+            })
+
+
+        }
+        catch (error) {
+            console.error("Error al listar channels:", error);
+            return response.status(500).json({
                 ok: false,
-                message: 'Error interno del servidor',
-          });
+                status: 500,
+                message: "Error interno del servidor al listar los canales",
+            });
         }
     }
+
 }
 
 

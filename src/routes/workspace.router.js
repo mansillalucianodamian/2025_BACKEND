@@ -38,7 +38,7 @@ workspaceRouter.get(
     '/:workspace_id/channels',
     authMiddleware, 
     workspaceMiddleware(),
-    WorkspaceController.getAllByWorkspaceId
+    ChannelController.getAllByWorkspace
 )
  //Crear canales
 workspaceRouter.post(
