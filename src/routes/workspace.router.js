@@ -10,23 +10,14 @@ import MessagesController from '../controllers/messages.controller.js'
 
 const workspaceRouter = express.Router()
 
-
-/* workspaceRouter.get(
-    '/all',
-    WorkspaceController.getAll
-) */
-
-
-/* 
-Obtener la lista de espacios de trabajo DEL CLIENTE QUE ME ESTE CONSULTANDO
-*/
+//Obtener espacios de trabajo
 workspaceRouter.get(
     '/',
     authMiddleware,
     WorkspaceController.getAll
 )
 
-
+//Crear espacio de trabajo
 workspaceRouter.post(
     '/',
     authMiddleware,
@@ -40,17 +31,14 @@ workspaceRouter.get(
     workspaceMiddleware(),
     ChannelController.getAllByWorkspace
 )
- //Crear canales
+
+//Crear canales
 workspaceRouter.post(
     '/:workspace_id/channels',
     authMiddleware,
     workspaceMiddleware(['admin']), 
     ChannelController.create
 )
-//CONSIGNA:
-//Crear los controladores para crear mensajes y obtener mensajes
-//Siempre que se cree o obtenga la lista el servidor debera responder con la lista de mensajes
-
 
 //Crear mensajes
 workspaceRouter.post(
@@ -69,7 +57,7 @@ workspaceRouter.get(
     MessagesController.getAllByChannelId
 )
 
-
+//Test
 workspaceRouter.get(
     '/:workspace_id/test',
     authMiddleware, 
@@ -85,7 +73,7 @@ workspaceRouter.get(
     }
 )
 
-
+//Invitar a un usuario
 workspaceRouter.post(
     '/:workspace_id/invite', 
     authMiddleware, 

@@ -1,3 +1,4 @@
+import ChannelRepository from "../repositories/channel.repository.js";
 import ChannelService from "../services/channel.service.js";
 
 class ChannelController {
@@ -13,7 +14,7 @@ class ChannelController {
                 });
             }
             // Crear el canal usando .createChannel
-            const channel_list = await ChannelService.create(workspace_selected.id, name);
+            const channel_list = await ChannelService.create(workspace_selected._id, name);
             response.status(201).json({
                 ok: true,
                 message: 'Canal creado',
@@ -34,7 +35,7 @@ class ChannelController {
         try {
             //Obtener la lista de canales de un espacio de trabajo
             const { workspace_id } = request.params
-            const channels = await ChannelRepository.getAllByWorkspace(
+            const channels = await ChannelRepository.getAllByWorkspaceId(
                 workspace_id
             );
 
