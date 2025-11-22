@@ -1,28 +1,32 @@
+import Channel from "../models/Channel.model.js";
 import MessageService from "../services/messages.service.js"
 
 class MessagesController {
-    static async getAllByChannelId(request, response){
-        try{    
-            const {channel_selected, member} = request
-            const {messages} = await MessageService.getAllByChannelId(channel_selected._id)
+    static async getAllByChannelId(request, response) {
+        try {
+            const { channel_selected, member } = request
+            const { messages } = await MessageService.getAllByChannelId(channel_selected._id)
+            const channel = await Channel.findById(channel_selected._id);
             response.status(200).json({
                 ok: true,
                 status: 200,
                 message: "Messages",
                 data: {
+                    channel_id: channel_selected._id,
+                    channel_name: channel?.name,
                     messages: messages
                 },
             });
         }
-        catch(error){
-            if(error.status){
+        catch (error) {
+            if (error.status) {
                 return response.status(error.status).json({
-                    ok:false,
+                    ok: false,
                     message: error.message,
                     status: error.status
                 })
             }
-            else{
+            else {
                 console.error(
                     'ERROR AL REGISTRAR', error
                 )
@@ -36,13 +40,13 @@ class MessagesController {
     }
 
 
-    static async create(request, response){
-        try{    
-            const {channel_selected, member, user} = request
-            const {content} = request.body
+    static async create(request, response) {
+        try {
+            const { channel_selected, member, user } = request
+            const { content } = request.body
             //Crear un mensaje
             //(Para la clase que viene) Obtener la lista de mensajes y responder
-            const {messages, message_created} = await MessageService.create(content, member._id, channel_selected._id)
+            const { messages, message_created } = await MessageService.create(content, member._id, channel_selected._id)
 
             return response.status(201).json({
                 ok: true,
@@ -54,15 +58,15 @@ class MessagesController {
                 },
             });
         }
-        catch(error){
-            if(error.status){
+        catch (error) {
+            if (error.status) {
                 return response.status(error.status).json({
-                    ok:false,
+                    ok: false,
                     message: error.message,
                     status: error.status
                 })
             }
-            else{
+            else {
                 console.error(
                     'ERROR AL REGISTRAR', error
                 )

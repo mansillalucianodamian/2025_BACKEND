@@ -58,7 +58,9 @@ class MemberWorkspaceRepository {
     }
     static async getAllByUserId(user_id) {
         const members = await MemberWorkspace.find({ id_user: user_id }).populate('id_workspace')
-        const members_list_formated = members.map(
+        const members_list_formated = members
+        .filter(member => member.id_workspace)
+        .map(
             (member) => {
                 return {
                     workspace_id: member.id_workspace._id,
