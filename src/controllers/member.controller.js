@@ -1,7 +1,5 @@
 import jwt from 'jsonwebtoken'
 
-import MemberWorkspaceRepository from '../repositories/memberWorkspace.repository.js'
-import { ServerError } from '../error.js'
 import MemberWorkspaceService from '../services/memberWorkspace.service.js'
 import ENVIROMENT from '../config/enviroment.config.js'
 
@@ -10,44 +8,34 @@ class MemberController {
         try {
             const { invitation_token } = request.params
             await MemberWorkspaceService.confirmInvitation(invitation_token)
-            response.redirect(`${ENVIROMENT.URL_FRONTEND}/login?verified=true`)
-        }
-        catch (error) {
+
+            // éxito → redirigimos con flag
+            return response.redirect(`${ENVIROMENT.URL_FRONTEND}/login?verified=true`)
+        } catch (error) {
+            // token inválido
             if (error instanceof jwt.JsonWebTokenError) {
-                return response.status(400).json(
-                    {
-                        ok: false,
-                        message: 'Token invalido',
-                        status: 400
-                    }
-                )
+                return response.redirect(`${ENVIROMENT.URL_FRONTEND}/login?invite_error=invalid_token`)
             }
-            else if (error instanceof jwt.TokenExpiredError) {
-                return response.status(400).json(
-                    {
-                        ok: false,
-                        message: 'Token expirado, volve a solicitar que te inviten',
-                        status: 400
-                    }
-                )
+
+            // token expirado
+            if (error instanceof jwt.TokenExpiredError) {
+                return response.redirect(`${ENVIROMENT.URL_FRONTEND}/login?invite_error=expired_token`)
             }
-            else if (error.status) {
-                return response.status(error.status).json({
-                    ok: false,
-                    message: error.message,
-                    status: error.status
-                })
+
+            // errores controlados desde el service
+            if (error.status) {
+                if (error.message.includes('ya es miembro')) {
+                    return response.redirect(`${ENVIROMENT.URL_FRONTEND}/login?invite_error=already_member`)
+                }
+                if (error.message.includes('Usuario no encontrado')) {
+                    return response.redirect(`${ENVIROMENT.URL_FRONTEND}/login?invite_error=user_not_registered`)
+                }
+                return response.redirect(`${ENVIROMENT.URL_FRONTEND}/login?invite_error=unknown`)
             }
-            else {
-                console.error(
-                    'ERROR AL confirmar invitacion', error
-                )
-                return response.status(500).json({
-                    ok: false,
-                    message: 'Error interno del servidor',
-                    status: 500
-                })
-            }
+
+            // error inesperado
+            console.error('ERROR al confirmar invitación', error)
+            return response.redirect(`${ENVIROMENT.URL_FRONTEND}/login?invite_error=server_error`)
         }
     }
 }
