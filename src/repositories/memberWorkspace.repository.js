@@ -1,13 +1,15 @@
 import MemberWorkspace from "../models/MemberWorkspace.model.js";
 
 class MemberWorkspaceRepository {
-    static async create(user_id, workspace_id, role) {
+    static async create({ id_user, id_workspace, role }) {
         try {
-            await MemberWorkspace.insertOne({
-                id_user: user_id,
-                id_workspace: workspace_id,
-                role: role
-            })
+            const newMember = await MemberWorkspace.create({
+                id_user,
+                id_workspace,
+                role,
+                created_at: new Date()
+            });
+            return newMember;
         }
         catch (error) {
             console.error('[SERVER ERROR]: no se pudo crear el miembro de workspace', error);
@@ -59,24 +61,24 @@ class MemberWorkspaceRepository {
     static async getAllByUserId(user_id) {
         const members = await MemberWorkspace.find({ id_user: user_id }).populate('id_workspace')
         const members_list_formated = members
-        .filter(member => member.id_workspace)
-        .map(
-            (member) => {
-                return {
-                    workspace_id: member.id_workspace._id,
-                    workspace_name: member.id_workspace.name,
-                    workspace_created_at: member.id_workspace.created_at,
-                    workpace_url_image: member.id_workspace.url_image,
-                    member_id: member._id,
-                    member_user_id: member.id_user,
-                    member_role: member.role
+            .filter(member => member.id_workspace)
+            .map(
+                (member) => {
+                    return {
+                        workspace_id: member.id_workspace._id,
+                        workspace_name: member.id_workspace.name,
+                        workspace_created_at: member.id_workspace.created_at,
+                        workpace_url_image: member.id_workspace.url_image,
+                        member_id: member._id,
+                        member_user_id: member.id_user,
+                        member_role: member.role
+                    }
                 }
-            }
-        )
+            )
         return members_list_formated
     }
-    static async getByUserIdAndWorkspaceId(user_id, workspace_id){
-        const member = await MemberWorkspace.findOne({id_user: user_id, id_workspace: workspace_id})
+    static async getByUserIdAndWorkspaceId(user_id, workspace_id) {
+        const member = await MemberWorkspace.findOne({ id_user: user_id, id_workspace: workspace_id })
         return member
     }
 

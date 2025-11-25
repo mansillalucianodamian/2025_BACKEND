@@ -20,6 +20,7 @@ function workspaceMiddleware(valid_member_roles = []) {
             if (!workspace_selected) {
                 throw new ServerError(404, 'Workspace no encontrado')
             }
+            console.log("workspace_selected desde middleware:", workspace_selected)
 
             //Checkear si el cliente es un miembro de ese workspace
             const member = await MemberWorkspaceRepository.getByUserIdAndWorkspaceId(user.id, workspace_id)

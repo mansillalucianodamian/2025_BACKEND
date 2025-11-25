@@ -91,60 +91,90 @@ class WorkspaceController {
     }
 
     static async invite(request, response){
-        try{
-            const {member, workspace_selected, user} = request
-            const {email_invited, role_invited} = request.body
-           
-            await WorkspaceService.invite(member, workspace_selected, email_invited, role_invited)
-            response.json({
-                status: 200,
-                message: 'Invitacion enviada',
-                ok: true
-            })
-            /* 
-                - Verificar que exista un usuario (EN LA DB) con el email_invited
-                    Por?: Hay que checkear que el usuario invitado existe
-                    EJEMPLO: Los invito a un grupo de wsp y ustedes no tienen wsp
-                    Sino existe tirar error 404
-                
-                - Verificar que YA NO ESTE en el workspace, sino seria un miembro duplicado
+       try {
+            
+            const { workspace_selected, user, member } = request 
+            const { invited_email } = request.body
+            
+            //Buscar al usuario y validar que exista y este activo
+            const user_invited = await UserRepository.getByEmail(invited_email)
+            console.log({ user_invited })
+            if (!user_invited) {
+                throw new ServerError(404, 'Usuario no encontrado')
+            }
+            //Verificar que NO es miembro actual de ese workspace 
+            const member_data = await MemberWorkspaceRepository.getByUserIdAndWorkspaceId(
+                user_invited._id, workspace_selected._id
+            )
 
-                - Generar un token con: 
+            if (member_data) {
+                throw new ServerError(409, `Usuario con email ${invited_email} ya es miembro del workspace`)
+            }
+
+            const id_inviter = member._id
+            const invite_token = jwt.sign(
                 {
-                    id_invited,
-                    id_inviter,
-                    id_workspace,
-                    invited_role
+                    id_invited: user_invited._id,
+                    email_invited: invited_email,
+                    id_workspace: workspace_selected._id,
+                    id_inviter: id_inviter
+                },
+                ENVIROMENT.JWT_SECRET,
+                {
+                    expiresIn: '7d'
                 }
                 
-                - Enviar el mail de invitacion
-                    Ejemplo: 
-                        `
-                        <h1>Has sido invitado al workspace: ${workspace_select.name}</h1>
-                        <a href="${URL_FRONTEND}/api/member/confirm/${invite_token}"">Aceptar</a>
-                        `
-            */
+            )
+
+            //Enviar mail de invitacion al usuario invitado
+
+
+            await mailTransporter.sendMail(
+                {
+                    from: ENVIROMENT.GMAIL_USER,
+                    to: invited_email,
+                    subject: 'Invitacion al workspace',
+                    html: `<h1>El usuario: ${user.email} te ha enviado una invitación
+                            al workspace ${workspace_selected.name}<h1/>
+                            <a href="${ENVIROMENT.URL_BACKEND}/api/member/confirm-invitation/${invite_token}">
+                                Click para aceptar
+                            <a/>
+                            `
+                }
+            )
+
+            response.status(200).json({
+                ok: true,
+                status: 200,
+                message:'Usuario invitado con exito',
+                data: null
+            })
+
         }
-         catch(error){
-            if(error.status){
-                return response.status(error.status).json({
-                    ok:false,
-                    message: error.message,
-                    status: error.status
-                })
-            }
-            else{
-                console.error(
-                    'ERROR AL invitar', error
+        catch (error) {
+            console.log(error)
+            //Evaluamos si es un error que nosotros definimos
+            if (error.status) {
+                return response.status(error.status).json(
+                    {
+                        ok: false,
+                        status: error.status,
+                        message: error.message
+                    }
                 )
-                return response.status(500).json({
-                    ok: false,
-                    message: 'Error interno del servidor',
-                    status: 500
-                })
+            }
+            else {
+                return response.status(500).json(
+                    {
+                        ok: false,
+                        status: 500,
+                        message: 'Error interno del servidor'
+                    }
+                )
             }
         }
     }
+
     static async getById (request, response){
         try{
             const {workspace_selected, member, user} = request

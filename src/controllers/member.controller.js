@@ -9,16 +9,8 @@ class MemberController {
     static async confirmInvitation(request, response) {
         try {
             const { invitation_token } = request.params
-            /* 
-              {
-                id_invited: user_invited._id,
-                id_inviter: member._id,
-                id_workspace: workspace_selected._id,
-                invited_role: role_invited
-            },
-            */
             await MemberWorkspaceService.confirmInvitation(invitation_token)
-            response.redirect(`${ENVIROMENT.URL_FRONTEND}/login`)
+            response.redirect(`${ENVIROMENT.URL_FRONTEND}/login?verified=true`)
         }
         catch (error) {
             if (error instanceof jwt.JsonWebTokenError) {
