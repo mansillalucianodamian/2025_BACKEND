@@ -14,11 +14,20 @@ class WorkspaceService {
         return members
     }
     static async create(user_id, name, url_image) {
-        console.log(user_id, name, url_image)
-        const workspace_created = await WorkspaceRepository.create(name, url_image)
-        await MemberWorkspaceRepository.create(user_id, workspace_created._id, 'admin')
-        return workspace_created
-    
+        console.log("Creando workspace:", user_id, name, url_image);
+
+        // 1. Crear el workspace
+        const workspace_created = await WorkspaceRepository.create(name, url_image);
+
+        // 2. Asociar el usuario como miembro admin del workspace
+        await MemberWorkspaceRepository.create({
+            id_user: user_id,
+            id_workspace: workspace_created._id,
+            role: 'admin'
+        });
+
+        // 3. Devolver el workspace creado
+        return workspace_created;
     }
     static async invite(member, workspace_selected, email_invited, role_invited) {
         const user_invited = await UserRepository.getByEmail(email_invited)
@@ -55,7 +64,7 @@ class WorkspaceService {
                         `
         })
     }
-    
+
 }
 
 

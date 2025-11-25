@@ -23,6 +23,13 @@ workspaceRouter.post(
     authMiddleware,
     WorkspaceController.create
 )
+//Eliminar un workspaces
+workspaceRouter.delete(
+    '/:workspace_id',
+    authMiddleware,
+    workspaceMiddleware(['admin']),
+    WorkspaceController.delete
+)
 
 //Obtener canales
 workspaceRouter.get(
@@ -80,5 +87,7 @@ workspaceRouter.post(
     workspaceMiddleware(['admin']), 
     WorkspaceController.invite
 )
+
+
 
 export default workspaceRouter

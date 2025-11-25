@@ -9,8 +9,8 @@ import WorkspaceService from "../services/workspace.service.js"
 import jwt from 'jsonwebtoken'
 
 class WorkspaceController {
-    static async getAll (request, response){
-        try{
+    static async getAll(request, response) {
+        try {
             //Muestro los datos de sesion del usuario
             const user = request.user
 
@@ -29,15 +29,15 @@ class WorkspaceController {
                 }
             )
         }
-        catch(error){
-            if(error.status){
+        catch (error) {
+            if (error.status) {
                 return response.status(error.status).json({
-                    ok:false,
+                    ok: false,
                     message: error.message,
                     status: error.status
                 })
             }
-            else{
+            else {
                 console.error(
                     'ERROR AL OBTENER LOS WORKSPACES', error
                 )
@@ -50,34 +50,35 @@ class WorkspaceController {
         }
     }
 
-    static async create (request, response){
-        try{
-            const user = request.user
-            const {name, url_img} = request.body
+    static async create(request, response) {
+        try {
+            // El usuario viene del token gracias al authMiddleware
+            const user_id = request.user.id;
+            const { name, url_img } = request.body;
 
-            const workspace_created = await WorkspaceService.create( user.id, name, url_img )
-
+            // Crear el workspace y asociar al usuario como admin
+            const workspace_created = await WorkspaceService.create(user_id, name, url_img);
             response.status(201).json(
                 {
                     status: 201,
                     ok: true,
                     message: 'Workspace creado con exito',
                     data: {
-                        
+
                         workspace_created
                     }
                 }
             )
         }
-        catch(error){
-            if(error.status){
+        catch (error) {
+            if (error.status) {
                 return response.status(error.status).json({
-                    ok:false,
+                    ok: false,
                     message: error.message,
                     status: error.status
                 })
             }
-            else{
+            else {
                 console.error(
                     'ERROR AL OBTENER LOS WORKSPACES', error
                 )
@@ -90,12 +91,12 @@ class WorkspaceController {
         }
     }
 
-    static async invite(request, response){
-       try {
-            
-            const { workspace_selected, user, member } = request 
+    static async invite(request, response) {
+        try {
+
+            const { workspace_selected, user, member } = request
             const { invited_email } = request.body
-            
+
             //Buscar al usuario y validar que exista y este activo
             const user_invited = await UserRepository.getByEmail(invited_email)
             console.log({ user_invited })
@@ -123,7 +124,7 @@ class WorkspaceController {
                 {
                     expiresIn: '7d'
                 }
-                
+
             )
 
             //Enviar mail de invitacion al usuario invitado
@@ -146,7 +147,7 @@ class WorkspaceController {
             response.status(200).json({
                 ok: true,
                 status: 200,
-                message:'Usuario invitado con exito',
+                message: 'Usuario invitado con exito',
                 data: null
             })
 
@@ -175,15 +176,15 @@ class WorkspaceController {
         }
     }
 
-    static async getById (request, response){
-        try{
-            const {workspace_selected, member, user} = request
+    static async getById(request, response) {
+        try {
+            const { workspace_selected, member, user } = request
 
             const channels = await ChannelService.getAllByWorkspaceId(workspace_selected._id)
 
             response.json(
                 {
-                    ok:true, 
+                    ok: true,
                     status: 200,
                     message: 'Espacio de trabajo obtenido',
                     data: {
@@ -193,15 +194,48 @@ class WorkspaceController {
                 }
             )
         }
-         catch(error){
-            if(error.status){
+        catch (error) {
+            if (error.status) {
                 return response.status(error.status).json({
-                    ok:false,
+                    ok: false,
                     message: error.message,
                     status: error.status
                 })
             }
-            else{
+            else {
+                console.error(
+                    'ERROR AL obtener detalles del workspace', error
+                )
+                return response.status(500).json({
+                    ok: false,
+                    message: 'Error interno del servidor',
+                    status: 500
+                })
+            }
+        }
+    }
+    static async delete(request, response) {
+        try {
+            const { workspace_selected, member, user } = request
+            await WorkspaceRepository.deleteById(workspace_selected._id)
+            response.json(
+                {
+                    ok: true,
+                    status: 200,
+                    message: 'Espacio de trabajo eliminado',
+                    data: null
+                }
+            )
+        }
+        catch (error) {
+            if (error.status) {
+                return response.status(error.status).json({
+                    ok: false,
+                    message: error.message,
+                    status: error.status
+                })
+            }
+            else {
                 console.error(
                     'ERROR AL obtener detalles del workspace', error
                 )
