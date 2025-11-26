@@ -30,6 +30,13 @@ workspaceRouter.delete(
     workspaceMiddleware(['admin']),
     WorkspaceController.delete
 )
+//Actualizar un workspaces
+workspaceRouter.put(
+  '/:workspace_id',
+  authMiddleware,           
+  workspaceMiddleware,      
+  WorkspaceController.update  
+);
 
 //Obtener canales
 workspaceRouter.get(

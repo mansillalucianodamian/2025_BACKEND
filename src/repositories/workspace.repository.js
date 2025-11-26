@@ -43,17 +43,22 @@ class WorkspaceRepository {
             throw error
         }
     }
-    static async updateById(worksapce_id, worksapce_update) {
+    static async updateById(workspace_id, workspace_update) {
         try {
-            const update = await Workspace.findByIdAndUpdate(worksapce_id, worksapce_update)
-            return update
-        }
-        catch (error) {
-            console.error('[SERVER ERROR]: no se pudo actualizar el workspace', error)
-            throw error
+            const updated = await Workspace.findByIdAndUpdate(
+                workspace_id,
+                workspace_update,
+                { new: true } // devuelve el documento actualizado
+            );
+
+            return updated;
+        } catch (error) {
+            console.error('[SERVER ERROR]: no se pudo actualizar el workspace', error);
+            throw error;s
         }
     }
-  
+
+
 }
 
 export default WorkspaceRepository

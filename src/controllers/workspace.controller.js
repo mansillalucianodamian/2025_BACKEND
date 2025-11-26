@@ -247,6 +247,43 @@ class WorkspaceController {
             }
         }
     }
+
+    static async update(request, response) {
+        try {
+            const { workspace_selected, member } = request;
+            const { name, url_img } = request.body;
+
+            // Validar permisos
+            if (member.role !== 'admin') {
+                return response.status(403).json({
+                    ok: false,
+                    message: 'No tienes permisos para actualizar este workspace',
+                    status: 403
+                });
+            }
+
+            // Llamar al servicio
+            const updated = await WorkspaceService.updateWorkspace(
+                workspace_selected._id,
+                name,
+                url_img
+            );
+
+            return response.json({
+                ok: true,
+                status: 200,
+                message: 'Espacio de trabajo actualizado',
+                data: updated
+            });
+        } catch (error) {
+            return response.status(error.status || 500).json({
+                ok: false,
+                message: error.message || 'Error interno del servidor',
+                status: error.status || 500
+            });
+        }
+    }
+
 }
 
 export default WorkspaceController

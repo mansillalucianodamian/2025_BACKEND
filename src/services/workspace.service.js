@@ -1,5 +1,4 @@
 
-
 import ENVIROMENT from "../config/enviroment.config.js"
 import mailTransporter from "../config/mailTransporter.config.js"
 import { ServerError } from "../error.js"
@@ -15,20 +14,15 @@ class WorkspaceService {
     }
     static async create(user_id, name, url_image) {
         console.log("Creando workspace:", user_id, name, url_image);
-
-        // 1. Crear el workspace
         const workspace_created = await WorkspaceRepository.create(name, url_image);
-
-        // 2. Asociar el usuario como miembro admin del workspace
         await MemberWorkspaceRepository.create({
             id_user: user_id,
             id_workspace: workspace_created._id,
             role: 'admin'
         });
-
-        // 3. Devolver el workspace creado
         return workspace_created;
     }
+
     static async invite(member, workspace_selected, email_invited, role_invited) {
         const user_invited = await UserRepository.getByEmail(email_invited)
         if (!user_invited) {
@@ -65,6 +59,37 @@ class WorkspaceService {
         })
     }
 
+    static async updateWorkspace(workspace_id, name, url_image) {
+        try {
+            if (!workspace_id) {
+                const error = new Error('workspace_id requerido');
+                error.status = 400;
+                throw error;
+            }
+
+            if (!name && !url_image) {
+                const error = new Error('Debes enviar al menos un campo para actualizar');
+                error.status = 400;
+                throw error;
+            }
+
+            const workspace_updated = await WorkspaceRepository.updateById(workspace_id, {
+                name,
+                url_image
+            });
+
+            if (!workspace_updated) {
+                const error = new Error('Workspace no encontrado');
+                error.status = 404;
+                throw error;
+            }
+
+            return workspace_updated;
+        } catch (error) {
+            console.error('[SERVICE ERROR]: no se pudo actualizar el workspace', error);
+            throw error;
+        }
+    }
 }
 
 
