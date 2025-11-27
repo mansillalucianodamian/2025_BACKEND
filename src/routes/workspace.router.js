@@ -34,7 +34,7 @@ workspaceRouter.delete(
 workspaceRouter.put(
   '/:workspace_id',
   authMiddleware,           
-  workspaceMiddleware,      
+  workspaceMiddleware (),      
   WorkspaceController.update  
 );
 

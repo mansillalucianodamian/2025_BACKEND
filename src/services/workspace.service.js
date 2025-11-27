@@ -59,37 +59,42 @@ class WorkspaceService {
         })
     }
 
-    static async updateWorkspace(workspace_id, name, url_image) {
+    static async updateWorkspace(workspace_id, name, url_img) {
         try {
             if (!workspace_id) {
-                const error = new Error('workspace_id requerido');
+                const error = new Error("workspace_id requerido");
                 error.status = 400;
                 throw error;
             }
 
-            if (!name && !url_image) {
-                const error = new Error('Debes enviar al menos un campo para actualizar');
+            if (!name && !url_img) {
+                const error = new Error("Debes enviar al menos un campo para actualizar");
                 error.status = 400;
                 throw error;
             }
 
-            const workspace_updated = await WorkspaceRepository.updateById(workspace_id, {
-                name,
-                url_image
-            });
+            const updateData = {};
+            if (name) updateData.name = name;       // 👈 usar 'name'
+            if (url_img) updateData.url_img = url_img; // 👈 usar 'url_img'
+
+            const workspace_updated = await WorkspaceRepository.updateById(
+                workspace_id,
+                updateData
+            );
 
             if (!workspace_updated) {
-                const error = new Error('Workspace no encontrado');
+                const error = new Error("Workspace no encontrado");
                 error.status = 404;
                 throw error;
             }
 
             return workspace_updated;
         } catch (error) {
-            console.error('[SERVICE ERROR]: no se pudo actualizar el workspace', error);
+            console.error("[SERVICE ERROR]: no se pudo actualizar el workspace", error);
             throw error;
         }
     }
+
 }
 
 

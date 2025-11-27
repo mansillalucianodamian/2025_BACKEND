@@ -51,14 +51,18 @@ class WorkspaceRepository {
                 { new: true } // devuelve el documento actualizado
             );
 
+            if (!updated) {
+                const error = new Error("Workspace no encontrado");
+                error.status = 404;
+                throw error;
+            }
+
             return updated;
         } catch (error) {
-            console.error('[SERVER ERROR]: no se pudo actualizar el workspace', error);
-            throw error;s
+            console.error("[SERVER ERROR]: no se pudo actualizar el workspace", error);
+            throw error;
         }
     }
-
-
 }
 
 export default WorkspaceRepository

@@ -54,3 +54,12 @@ Este repositorio incluye la colección de Postman API_1.postman_collection.json 
 * Elegí el archivo API_1.postman_collection.json.
 
 Ya tendrás todos los endpoints listos para ejecutar.
+
+🌐 Repositorios y despliegues
+Frontend 
+📦 Código fuente: https://github.com/mansillalucianodamian/2025_FRONTEND
+🚀 Deploy: https://2025-frontend-1w2nbqtm6-mansillalucianodamians-projects.vercel.app/
+
+Backend 
+📦 Código fuente: https://github.com/mansillalucianodamian/2025_BACKEND
+🚀 Deploy: https://2025-backend-adod1oock-mansillalucianodamians-projects.vercel.app/

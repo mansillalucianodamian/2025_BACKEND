@@ -20,6 +20,8 @@ function authMiddleware(request, response, next) {
         //HOT POINT: GUARDAMOS LOS DATOS DEL TOKEN DENTRO DE LA REQUEST
         request.user = user_session_data
         next()
+    
+    console.log("✅ authMiddleware OK, user:", request.user);
     }
     catch (error) {
         if (error instanceof jwt.JsonWebTokenError) {
